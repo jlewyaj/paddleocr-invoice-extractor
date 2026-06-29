@@ -4,13 +4,46 @@ from models import Invoice
 class InvoiceParser:
 
     FIELD_MAP = {
-        "Doctor": "doctor",
-        "Patient": "patient",
-        "Hospital": "hospital",
-        "Receipt No": "receipt_no",
-        "Receipt": "receipt_no",
-        "Date": "date",
-        "Total": "total"
+        "receipt_no": [
+            "Receipt No",
+            "Receipt #",
+            "OR No",
+            "OR #",
+            "Official Receipt",
+        ],
+
+        "doctor": [
+            "Doctor",
+            "Dr.",
+            "Physician",
+            "Attending Physician",
+        ],
+
+        "patient": [
+            "Patient",
+            "Patient Name",
+            "Name of Patient",
+            "Client",
+        ],
+
+        "hospital": [
+            "Hospital",
+            "Medical Center",
+            "Clinic",
+        ],
+
+        "date": [
+            "Date",
+            "Receipt Date",
+            "Transaction Date",
+        ],
+
+        "total": [
+            "Total",
+            "Total Amount",
+            "Grand Total",
+            "Amount Due",
+        ]
     }
 
     def extract_value(self, current_text, next_text, label):
@@ -41,15 +74,16 @@ class InvoiceParser:
                 else:
                     next_text = ""
 
-                for label, key in self.FIELD_MAP.items():
-                    if label in current_text: 
-                        value = self.extract_value(
-                            current_text,
-                            next_text,
-                            label
-                        )
-                        setattr(invoice, key, value)
+                for key, labels in self.FIELD_MAP.items():
+                    for label in labels:
+                        if label in current_text: 
+                            value = self.extract_value(
+                                current_text,
+                                next_text,
+                                label
+                            )
+                            setattr(invoice, key, value)
 
-                        break
+                            break
         
         return invoice
