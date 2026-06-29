@@ -1,3 +1,6 @@
+from models import Invoice
+
+
 class InvoiceParser:
 
     FIELD_MAP = {
@@ -26,7 +29,7 @@ class InvoiceParser:
         return value
 
     def parse(self, result):
-        invoice = {}
+        invoice = Invoice()
 
         for image in result:
             for i, box in enumerate(image):
@@ -40,11 +43,12 @@ class InvoiceParser:
 
                 for label, key in self.FIELD_MAP.items():
                     if label in current_text: 
-                        invoice[key] = self.extract_value(
+                        value = self.extract_value(
                             current_text,
                             next_text,
                             label
                         )
+                        setattr(invoice, key, value)
 
                         break
         
