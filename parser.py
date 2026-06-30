@@ -1,3 +1,4 @@
+import re
 from models import Invoice
 
 
@@ -16,6 +17,14 @@ class InvoiceParser:
             "Physician",
             "Doctor",
             "Dr.",
+        ],
+        "prc_license": [
+            "PRC License No",
+            "PRC License",
+            "PRC Lic. No",
+            "PRC Lic",
+            "License No",
+            "License #",
         ],
         "patient": [
             "Name of Patient",
@@ -59,7 +68,7 @@ class InvoiceParser:
     def match_field(self, current_text):
         for key, labels in self.FIELD_MAP.items():
             for label in labels:
-                if label in current_text:
+                if label.lower() in current_text.lower():
                     return key, label
         return None
 
@@ -92,6 +101,9 @@ class InvoiceParser:
             .replace("No", "")
             .strip()
         )
+
+    def clean_text(self, value):
+        return re.sub(r"\s+", " ", value).strip()
     
     def clean_value(self, key, value):
 
@@ -99,6 +111,7 @@ class InvoiceParser:
 
         if cleaner:
             value = cleaner(value)
+            value = self.clean_text(value)
 
         return value
 

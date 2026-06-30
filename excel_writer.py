@@ -16,6 +16,7 @@ class ExcelWriter:
             "Receipt No",
             "Hospital",
             "Doctor",
+            "PRC License",
             "Patient",
             "Date",
             "Total",
@@ -28,11 +29,12 @@ class ExcelWriter:
         for invoice in invoices:
             if not any(vars(invoice).values()):
                 continue
-            
+
             sheet.append([
                 invoice.receipt_no,
                 invoice.hospital,
                 invoice.doctor,
+                invoice.prc_license,
                 invoice.patient,
                 invoice.date,
                 invoice.total,
