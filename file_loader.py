@@ -31,7 +31,7 @@ class FileLoader:
             else:
                 pages.append(
                     Page(
-                        filename=file.name,
+                        file=file,
                         page_number=1,
                         image=file,
                     )

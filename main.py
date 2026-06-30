@@ -14,8 +14,7 @@ invoices = []
 
 for page in loader.load_pages("input"):
     result = ocr.read(str(page.image))
-    invoice = parser.parse(result)
-    invoice.page = page.page_number
+    invoice = parser.parse(page, result)
     invoices.append(invoice)
 
 writer.write(invoices)

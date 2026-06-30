@@ -57,11 +57,15 @@ class InvoiceParser:
         }
 
     def get_current_and_next_text(self, i, image):
+        
         current_text = image[i][1][0]
         if i + 1 < len(image):
             next_text = image[i+1][1][0]
         else:
             next_text = ""
+        
+        print(current_text)
+        print(next_text)
 
         return current_text, next_text
 
@@ -98,6 +102,7 @@ class InvoiceParser:
         return (
             value
             .replace("No.", "")
+            .replace("No.", "")
             .replace("No", "")
             .strip()
         )
@@ -115,8 +120,11 @@ class InvoiceParser:
 
         return value
 
-    def parse(self, result):
+    def parse(self, page, result):
         invoice = Invoice()
+
+        invoice.page = page.page_number
+        invoice.filename = page.filename
 
         for image in result:
             for i, _ in enumerate(image):

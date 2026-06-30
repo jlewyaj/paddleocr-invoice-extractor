@@ -5,6 +5,7 @@ from typing import Any
 
 @dataclass
 class Invoice:
+    filename: str = ""
     page: int = 0
     receipt_no: str = ""
     hospital: str = ""
@@ -17,6 +18,18 @@ class Invoice:
 
 @dataclass
 class Page:
-    filename: str
+    file: Path
     page_number: int
     image: Any
+
+    @property
+    def filename(self):
+        return self.file.name
+
+    @property
+    def stem(self):
+        return self.file.stem
+
+    @property
+    def extension(self):
+        return self.file.suffix.lower()
