@@ -10,14 +10,24 @@ class FileLoader:
         ".pdf"
     ]
 
-    def load(self, folder):
+    def __init__(self, pdf_converter):
+        self.pdf_converter = pdf_converter
+
+    def load_pages(self, folder):
+
         folder = Path(folder)
 
-        files = []
+        pages = []
 
         for file in folder.iterdir():
 
-            if file.suffix.lower() in self.SUPPORTED_EXTENSIONS:
-                files.append(file)
+            if file.suffix.lower() not in self.SUPPORTED_EXTENSIONS:
+                continue
 
-        return sorted(files)
+            if file.suffix.lower() == "pdf":
+                pages = self.pdf_converter.convert(str(file))
+                pages.extend(pages)
+            else:
+                pages.append(str(file))
+
+        return sorted(pages)

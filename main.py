@@ -2,18 +2,18 @@ from ocr_engine import OCREngine
 from parser import InvoiceParser
 from file_loader import FileLoader
 from excel_writer import ExcelWriter
+from pdf_converter import PDFConverter
 
-
-loader = FileLoader()
+converter = PDFConverter()
+loader = FileLoader(converter)
 ocr = OCREngine()
 parser = InvoiceParser()
 writer = ExcelWriter()
 
 invoices = []
 
-for file in loader.load("media"):
-    print(type(str(file)))
-    result = ocr.read(str(file))
+for page in loader.load_pages("input"):
+    result = ocr.read(page)
     invoice = parser.parse(result)
     invoices.append(invoice)
 
