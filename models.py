@@ -1,4 +1,6 @@
 from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
 
 
 @dataclass
@@ -11,3 +13,10 @@ class Invoice:
     patient: str = ""
     date: str = ""
     total: str = ""
+
+
+@dataclass
+class Page:
+    filename: str
+    page_number: int
+    image: Any

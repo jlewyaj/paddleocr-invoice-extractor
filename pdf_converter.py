@@ -1,5 +1,6 @@
 import fitz
 import numpy as np
+from models import Page
 
 
 class PDFConverter:
@@ -12,7 +13,7 @@ class PDFConverter:
         for page in doc:
 
             pix = page.get_pixmap(
-                matrix=fitz.Matrix(2, 2)
+                matrix=fitz.Matrix(10, 10)
             )
 
             image = np.frombuffer(
@@ -24,7 +25,13 @@ class PDFConverter:
                 pix.n
             )
 
-            pages.append(image)
+            pages.append(
+                Page(
+                    filename=pdf_path.name,
+                    page_number=page.number + 1,
+                    image=image,
+                )
+            )
 
         print(type(pages[0]))
         print(pages[0].shape)

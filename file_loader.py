@@ -1,4 +1,5 @@
 from pathlib import Path
+from models import Page
 
 
 class FileLoader:
@@ -19,7 +20,7 @@ class FileLoader:
 
         pages = []
 
-        for file in folder.iterdir():
+        for file in sorted(folder.iterdir()):
 
             if file.suffix.lower() not in self.SUPPORTED_EXTENSIONS:
                 continue
@@ -28,6 +29,12 @@ class FileLoader:
                 pages = self.pdf_converter.convert(str(file))
                 pages.extend(pages)
             else:
-                pages.append(str(file))
+                pages.append(
+                    Page(
+                        filename=file.name,
+                        page_number=1,
+                        image=file,
+                    )
+                )
 
-        return sorted(pages)
+        return pages
