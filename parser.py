@@ -41,14 +41,12 @@ class InvoiceParser:
         ]
     }
 
-
     def __init__(self):
         self.cleaners = {
             "total": self.clean_amount,
             "receipt_no": self.clean_receipt_no,
         }
 
-    
     def get_current_and_next_text(self, i, image):
         current_text = image[i][1][0]
         if i + 1 < len(image):
@@ -58,14 +56,12 @@ class InvoiceParser:
 
         return current_text, next_text
 
-
     def match_field(self, current_text):
         for key, labels in self.FIELD_MAP.items():
             for label in labels:
                 if label in current_text:
                     return key, label
         return None
-
 
     def extract_value(self, current_text, next_text, label):
         value = (
@@ -79,7 +75,6 @@ class InvoiceParser:
             value = next_text
         
         return value
-    
 
     def clean_amount(self, value):
         return (
@@ -89,7 +84,6 @@ class InvoiceParser:
             .strip()
         )
     
-    
     def clean_receipt_no(self, value):
         return (
             value
@@ -97,7 +91,6 @@ class InvoiceParser:
             .replace("No", "")
             .strip()
         )
-    
     
     def clean_value(self, key, value):
 
@@ -107,7 +100,6 @@ class InvoiceParser:
             value = cleaner(value)
 
         return value
-
 
     def parse(self, result):
         invoice = Invoice()

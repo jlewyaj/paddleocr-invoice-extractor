@@ -1,10 +1,10 @@
-from paddleocr import PaddleOCR
+from ocr_engine import OCREngine
 from parser import InvoiceParser
 
-ocr = PaddleOCR(use_angle_cls=True, lang="en")
-result = ocr.ocr("media/sample4.jpg", cls=True)
-
+ocr = OCREngine()
 parser = InvoiceParser()
+
+result = ocr.read("media/sample4.jpg")
 invoice = parser.parse(result)
 
 print(invoice)
