@@ -80,6 +80,7 @@ class InvoiceParser:
         return (
             value
             .replace("₱", "")
+            .replace("P", "")
             .replace(",", "")
             .strip()
         )
