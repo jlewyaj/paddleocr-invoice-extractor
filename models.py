@@ -33,3 +33,10 @@ class Page:
     @property
     def extension(self):
         return self.file.suffix.lower()
+    
+
+@dataclass
+class OCRLine:
+    text: str
+    confidence: float
+    bbox: list

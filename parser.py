@@ -6,7 +6,6 @@ class InvoiceParser:
 
     FIELD_MAP = {
         "receipt_no": [
-            "Official Receipt",
             "Receipt No",
             "Receipt #",
             "OR No",
@@ -47,7 +46,7 @@ class InvoiceParser:
             "Grand Total",
             "Amount Due",
             "Total",
-        ]
+        ],
     }
 
     def __init__(self):
@@ -56,38 +55,25 @@ class InvoiceParser:
             "receipt_no": self.clean_receipt_no,
         }
 
-    def get_current_and_next_text(self, i, image):
-        
-        current_text = image[i][1][0]
-        if i + 1 < len(image):
-            next_text = image[i+1][1][0]
+    def get_current_and_next_line(self, index, lines):
+        current_line = lines[index]
+
+        if index + 1 < len(lines):
+            next_line = lines[index + 1]
         else:
-            next_text = ""
-        
-        print(current_text)
-        print(next_text)
+            next_line = None
 
-        return current_text, next_text
+        return current_line, next_line
 
-    def match_field(self, current_text):
+    def match_field(self, text):
+        text = text.lower()
+
         for key, labels in self.FIELD_MAP.items():
             for label in labels:
-                if label.lower() in current_text.lower():
+                if label.lower() in text:
                     return key, label
+
         return None
-
-    def extract_value(self, current_text, next_text, label):
-        value = (
-            current_text
-            .replace(label, "")
-            .replace(":", "")
-            .strip()
-        )
-
-        if not value:
-            value = next_text
-        
-        return value
 
     def clean_amount(self, value):
         return (
@@ -97,11 +83,10 @@ class InvoiceParser:
             .replace(",", "")
             .strip()
         )
-    
+
     def clean_receipt_no(self, value):
         return (
             value
-            .replace("No.", "")
             .replace("No.", "")
             .replace("No", "")
             .strip()
@@ -109,44 +94,82 @@ class InvoiceParser:
 
     def clean_text(self, value):
         return re.sub(r"\s+", " ", value).strip()
-    
-    def clean_value(self, key, value):
 
+    def clean_value(self, key, value):
         cleaner = self.cleaners.get(key)
 
         if cleaner:
             value = cleaner(value)
-            value = self.clean_text(value)
+
+        return self.clean_text(value)
+    
+    def is_label(self, text):
+        text = text.lower()
+
+        for labels in self.FIELD_MAP.values():
+            for label in labels:
+                if label.lower() in text:
+                    return True
+
+        return False
+    
+    def find_next_value(self, lines, start_index):
+        for line in lines[start_index + 1:]:
+
+            if not line.text.strip():
+                continue
+
+            if self.is_label(line.text):
+                continue
+
+            return line.text
+
+        return ""
+
+    def extract_value(self, current_line, lines, index, label):
+        value = (
+            current_line.text
+            .replace(label, "")
+            .replace(":", "")
+            .strip()
+        )
+
+        if not value:
+            value = self.find_next_value(lines, index)
 
         return value
 
-    def parse(self, page, result):
-        invoice = Invoice()
+    def parse(self, page, lines):
+        invoice = Invoice(
+            page=page.page_number,
+            filename=page.filename,
+        )
+        
 
-        invoice.page = page.page_number
-        invoice.filename = page.filename
+        for i in range(len(lines)):
 
-        for image in result:
-            for i, _ in enumerate(image):
-                
-                current_text, next_text = self.get_current_and_next_text(i, image)
+            current_line = lines[i]
 
-                field = self.match_field(current_text)
-                
-                if field:
-                    key, label = field
-                
-                    value = self.extract_value(
-                        current_text,
-                        next_text,
-                        label
-                    )
+            field = self.match_field(current_line.text)g
 
-                    value = self.clean_value(
-                        key,
-                        value
-                    )
+            if not field:
+                continue
 
-                    setattr(invoice, key, value)
+            key, label = field
+
+            value = self.extract_value(
+                current_line,
+                lines,
+                i,
+                label,
+            )
+
+            value = self.clean_value(
+                key,
+                value,
+            )
+
+            if not getattr(invoice, key):
+                setattr(invoice, key, value)
 
         return invoice

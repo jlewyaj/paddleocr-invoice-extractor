@@ -13,8 +13,8 @@ writer = ExcelWriter()
 invoices = []
 
 for page in loader.load_pages("input"):
-    result = ocr.read(str(page.image))
-    invoice = parser.parse(page, result)
+    lines = ocr.read(page.image)
+    invoice = parser.parse(page, lines)
     invoices.append(invoice)
 
 writer.write(invoices)

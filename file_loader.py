@@ -26,8 +26,8 @@ class FileLoader:
                 continue
 
             if file.suffix.lower() == "pdf":
-                pages = self.pdf_converter.convert(str(file))
-                pages.extend(pages)
+                pdf_pages = self.pdf_converter.convert(file)
+                pages.extend(pdf_pages)
             else:
                 pages.append(
                     Page(

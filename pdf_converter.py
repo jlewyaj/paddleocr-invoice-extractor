@@ -5,34 +5,36 @@ from models import Page
 
 class PDFConverter:
 
+    def pixmap_to_numpy(self, pix):
+        return np.frombuffer(
+            pix.samples,
+            dtype=np.uint8
+        ).reshape(
+            pix.height,
+            pix.width,
+            pix.n,
+        )
+
     def convert(self, pdf_path):
-        doc = fitz.open(pdf_path)
 
         pages = []
 
-        for page in doc:
+        with fitz.open(pdf_path) as doc:
 
-            pix = page.get_pixmap(
-                matrix=fitz.Matrix(10, 10)
-            )
+            for page in doc:
 
-            image = np.frombuffer(
-                pix.samples,
-                dtype=np.uint8
-            ).reshape(
-                pix.height,
-                pix.width,
-                pix.n
-            )
-
-            pages.append(
-                Page(
-                    filename=pdf_path.name,
-                    page_number=page.number + 1,
-                    image=image,
+                pix = page.get_pixmap(
+                    matrix=fitz.Matrix(2, 2)
                 )
-            )
 
-        print(type(pages[0]))
-        print(pages[0].shape)
+                image = self.pixmap_to_numpy(pix)
+
+                pages.append(
+                    Page(
+                        file=pdf_path,
+                        page_number=page.number + 1,
+                        image=image,
+                    )
+                )
+
         return pages
