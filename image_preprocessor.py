@@ -7,7 +7,7 @@ class ImagePreprocessor:
     to improve text recognition accuracy.
     """
 
-    def preprocess(self, image: np.ndarray) -> np.ndarray:
+    def preprocess(self, image):
         """Run the full preprocessing pipeline:
         grayscale -> (invert if dark) -> contrast enhancement -> denoise.
         """

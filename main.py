@@ -5,6 +5,7 @@ from image_preprocessor import ImagePreprocessor
 from excel_writer import ExcelWriter
 from pdf_converter import PDFConverter
 from text_normalizer import TextNormalizer
+from signature_detector import SignatureDetector
 
 # Wire up the pipeline components. Dependencies (like PDFConverter into
 # FileLoader) are passed in manually here rather than via a framework.
@@ -15,6 +16,7 @@ ocr = OCREngine()
 parser = InvoiceParser()
 writer = ExcelWriter()
 normalizer = TextNormalizer()
+detector = SignatureDetector()
 
 invoices = []
 
@@ -25,6 +27,7 @@ for page in loader.load_pages("input"):
     lines = ocr.read(page.image)          # NOTE: reads page.image (raw), not the preprocessed `image` above
     lines = normalizer.normalize(lines)
     invoice = parser.parse(page, lines)
+    invoice.signature = detector.detect(page.image, lines)
     invoices.append(invoice)
 
 # Write all parsed invoices out to Invoice_Extract.xlsx

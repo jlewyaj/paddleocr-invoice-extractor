@@ -32,6 +32,6 @@ class ReceiptNoExtractor(BaseExtractor):
             )
 
             if match:
-                return match.group(1)
+                return "OR-" + match.group(1)
 
         return ""

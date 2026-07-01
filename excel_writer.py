@@ -28,6 +28,7 @@ class ExcelWriter:
             "Patient",
             "Date",
             "Total",
+            "Signature"
         ])
 
         # Bold the header row
@@ -50,6 +51,7 @@ class ExcelWriter:
                 invoice.patient,
                 invoice.date,
                 invoice.total,
+                invoice.signature
             ])
 
         # Auto-size each column's width based on its longest cell value

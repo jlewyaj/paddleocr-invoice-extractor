@@ -20,6 +20,6 @@ class PRCLicenseExtractor(BaseExtractor):
             match = re.search(r"\d+", line.text)
 
             if match:
-                return match.group()
+                return "PRC Lic. No. " + match.group()
 
         return ""

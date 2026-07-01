@@ -18,6 +18,7 @@ class Invoice:
     patient: str = ""
     date: str = ""
     total: str = ""
+    signature: str = ""
 
 
 @dataclass
