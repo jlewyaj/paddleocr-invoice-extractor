@@ -10,8 +10,16 @@ from invoice_extractors.total import TotalExtractor
 
 
 class InvoiceParser:
+    """Coordinates a set of field-specific extractors to turn a page's
+    normalized OCR lines into a fully populated Invoice object.
+
+    Each field (receipt number, hospital, doctor, etc.) has its own
+    dedicated extractor class, so parsing logic for each field can be
+    developed/tested independently.
+    """
 
     def __init__(self):
+        # One extractor per Invoice field
         self.receipt_no = ReceiptNoExtractor()
         self.hospital = HospitalExtractor()
         self.doctor = DoctorExtractor()
@@ -21,6 +29,9 @@ class InvoiceParser:
         self.total = TotalExtractor()
 
     def parse(self, page, lines):
+        """Build an Invoice for `page` by running each extractor over
+        the page's OCR `lines`.
+        """
 
         invoice = Invoice(
             page=page.page_number,
