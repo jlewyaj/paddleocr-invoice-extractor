@@ -25,7 +25,7 @@ class FileLoader:
             if file.suffix.lower() not in self.SUPPORTED_EXTENSIONS:
                 continue
 
-            if file.suffix.lower() == "pdf":
+            if file.suffix.lower() == ".pdf":
                 pdf_pages = self.pdf_converter.convert(file)
                 pages.extend(pdf_pages)
             else:

@@ -13,7 +13,6 @@ class ExcelWriter:
 
         # Header Row
         sheet.append([
-            "File Name",
             "Page",
             "Receipt No",
             "Hospital",
@@ -33,7 +32,6 @@ class ExcelWriter:
                 continue
 
             sheet.append([
-                invoice.filename,
                 invoice.page,
                 invoice.receipt_no,
                 invoice.hospital,

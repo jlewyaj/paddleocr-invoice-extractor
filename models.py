@@ -5,7 +5,6 @@ from typing import Any
 
 @dataclass
 class Invoice:
-    filename: str = ""
     page: int = 0
     receipt_no: str = ""
     hospital: str = ""

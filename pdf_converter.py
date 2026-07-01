@@ -24,7 +24,7 @@ class PDFConverter:
             for page in doc:
 
                 pix = page.get_pixmap(
-                    matrix=fitz.Matrix(2, 2)
+                    dpi=200
                 )
 
                 image = self.pixmap_to_numpy(pix)
